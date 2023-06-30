@@ -9,7 +9,7 @@ Uses a combination of pygame and moviepy (based on ffmpeg) to display videos in 
  - `preserve_aspect_ratio` is a `VideoOptions` attribute to preserve the video's original aspect ratio when resizing
  - `self.video_delay` is now a `VideoOptions` attribute
  - `cv2` library is not required unless you want to use `VideoOptions.resize_method = ResizeMethod.CV2`
- - documentation and docstrings
+ - documentation, descriptions, and docstrings
 
 ## Some background
 The idea to create this module came after searching for hours for a very simple, easy-to-use video player in pure Python. I tested several libraries, example code, and StackOverflow recommendations, but nothing was quite what I needed, or rendered very slowly.
