@@ -1,7 +1,9 @@
+import atexit
 import enum
 import os
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Tuple, Optional, Union
 
 import cv2
@@ -69,9 +71,9 @@ class VideoPlayer:
         elif self.options.resize_method == ResizeMethod.CV2:
             self._video = self._max_res_video
 
-        audio_filename = os.path.splitext(filename)[0] + '.wav'
-        if not os.path.exists(audio_filename):
-            self._max_res_video.audio.write_audiofile(audio_filename)
+        audio_filename = Path(filename).with_suffix('.wav')
+        self._max_res_video.audio.write_audiofile(audio_filename)
+        atexit.register(audio_filename.unlink)  # cleanup audio file when program ends
         self._pygame_sound = pygame.mixer.Sound(file=audio_filename)
 
         self.playing = False
@@ -166,7 +168,8 @@ if __name__ == '__main__':
         show_fps=True,
         show_target_fps=True,
         show_resolution=True,
-        show_target_resolution=True
+        show_target_resolution=True,
+        resize_method=ResizeMethod.ALL_AT_ONCE
     )
     vid = VideoPlayer('/Users/bguliano/Downloads/video2.mp4', (1920, 1200), options)
     vid.play()
