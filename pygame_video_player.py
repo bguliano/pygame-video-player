@@ -29,6 +29,9 @@ class CV2Interpolation(enum.IntEnum):  # easier than searching the docs for all 
     INTER_NEAREST = cv2.INTER_NEAREST
 
 
+CLOCK_TYPE = Union[pygame.time.Clock.tick_busy_loop, pygame.time.Clock.tick]
+
+
 @dataclass
 class VideoOptions:
     show_fps: bool = False
@@ -41,7 +44,7 @@ class VideoOptions:
     fullscreen: bool = False
     lock_fps: bool = False
     # tick_busy_loop is more accurate, but consumes more CPU
-    tick_func: Union[pygame.Clock.tick_busy_loop, pygame.Clock.tick] = pygame.Clock.tick_busy_loop
+    tick_func: CLOCK_TYPE = pygame.time.Clock.tick_busy_loop
 
 
 class VideoPlayer:
@@ -81,7 +84,7 @@ class VideoPlayer:
         self._pygame_sound.play()
         self.playing = True
 
-        fps_clock = pygame.Clock()
+        fps_clock = pygame.time.Clock()
         fps_font = pygame.font.SysFont("Arial", 18, bold=True)
         res_font = pygame.font.SysFont("Arial", 18, bold=True)
 
@@ -151,7 +154,7 @@ class VideoPlayer:
             elif self.options.resize_method == ResizeMethod.FRAME_BY_FRAME:
                 image_clip = self._video.to_ImageClip(current_seconds).resize(self._rect.size)
                 raw_image = image_clip.get_frame(0)
-            elif self.options.resize_method == ResizeMethod.CV2:
+            else:  # self.options.resize_method == ResizeMethod.CV2
                 numpy_image = self._video.get_frame(current_seconds)
                 raw_image = cv2.resize(numpy_image, dsize=self._rect.size, interpolation=self.options.cv2_interpolation)
 
